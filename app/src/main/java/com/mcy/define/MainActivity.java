@@ -30,6 +30,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import android.provider.Settings;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 
 import java.security.Permission;
 import java.util.Objects;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         rvHome = findViewById(R.id.rvHome);
         toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
@@ -199,5 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 }
