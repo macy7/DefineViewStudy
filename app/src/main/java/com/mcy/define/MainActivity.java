@@ -3,16 +3,22 @@ package com.mcy.define;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.Notification;
@@ -32,12 +38,22 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.provider.Settings;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.security.Permission;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -47,16 +63,58 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rvHome;
     Toolbar toolbar;
     Bitmap bitmap;
-
+    ViewPager viewPager;
+    DrawerLayout drawerLayout;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final TextInputLayout textInputLayout = findViewById(R.id.tI_edit);
+        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = textInputLayout.getEditText().getText().toString();
+                if(s.length() < 6){
+                    textInputLayout.setErrorEnabled(true);
+                    textInputLayout.setError("11111");
+                }else {
+                    textInputLayout.setErrorEnabled(false);
+                }
+
+            }
+        });
+
         rvHome = findViewById(R.id.rvHome);
         toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
+        ActionBar supportActionBar = getSupportActionBar();
+        assert supportActionBar != null;
+//        supportActionBar.setHomeAsUpIndicator(R.drawable.t);
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+        drawerLayout = findViewById(R.id.drawLayoutFg);
+        NavigationView navigationView = findViewById(R.id.design_navigation_view);
+        if(navigationView != null){
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    menuItem.setChecked(true);
+                    String s = menuItem.getTitle().toString();
+                    Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+                    drawerLayout.closeDrawers();
+                    return false;
+                }
+            });
+        }
+        viewPager = findViewById(R.id.viewpager);
+        initViePager();
+        findViewById(R.id.floatBt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSnackBar();
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -94,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
 //                        }
 //                    });
 //                }
-                requestPermission();
+//                requestPermission();
+                showSnackBar();
                 Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
             }
 
@@ -104,7 +163,71 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         rvHome.setAdapter(homeAdapter);
+        RecyclerView recyclerView = findViewById(R.id.rvrv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new HomeAdapter());
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.item,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.item4) {
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    TabLayout tabLayout;
+    private void initViePager() {
+        tabLayout = findViewById(R.id.tabs);
+        final List<String> titles = new ArrayList<>();
+        titles.add("精选");
+        titles.add("体育");
+        titles.add("杂志");
+        titles.add("汽车");
+        titles.add("世界");
+        titles.add("中国");
+        titles.add("天下");
+        titles.add("人民");
+        titles.add("潍坊");
+        titles.add("医疗");
+        titles.add("新型");
+
+        for(int i=0; i<titles.size();i++){
+            tabLayout.addTab(tabLayout.newTab().setText(titles.get(i)));
+        }
+
+        final List<Fragment> fragments = new ArrayList<>();
+        for(int i=0;i <titles.size();i++){
+            fragments.add(new ListFragment());
+        }
+
+        final FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return fragments.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return fragments.size();
+            }
+
+            @Nullable
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return titles.get(position);
+            }
+        };
+        viewPager.setAdapter(fragmentPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabsFromPagerAdapter(fragmentPagerAdapter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -203,5 +326,15 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+    }
+
+    public void showSnackBar(){
+        Snackbar.make(rvHome,"xxx", Snackbar.LENGTH_LONG)
+                .setAction("click", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
+                    }
+                }).setDuration(1000).show();
     }
 }
