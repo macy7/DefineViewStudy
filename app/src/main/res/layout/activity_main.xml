@@ -188,8 +188,18 @@
             android:text="自定义Behavior"
             android:textColor="@color/colorAccent"/>
     </LinearLayout>
+
     <com.mcy.define.CustomMoveView
+        android:id="@+id/custom"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@color/colorAccent"/>
+        android:background="@color/colorAccent"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tvMian"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="自定义Behavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

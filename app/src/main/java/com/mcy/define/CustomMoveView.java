@@ -6,7 +6,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Scroller;
 
 import androidx.annotation.Nullable;
 
@@ -26,6 +28,7 @@ public class CustomMoveView extends View {
 
     public int lastX, lastY, screenWidth, screenHeight, statusBarHeight;
     Context context;
+    private Scroller mScroller;
 
     public CustomMoveView(Context context) {
         super(context);
@@ -53,6 +56,7 @@ public class CustomMoveView extends View {
         screenWidth = outMetrics.widthPixels;
         screenHeight = outMetrics.heightPixels;
         statusBarHeight = getStatusBarHeight();
+        mScroller = new Scroller(context);
     }
 
 
@@ -101,11 +105,43 @@ public class CustomMoveView extends View {
                     top = screenHeight - statusBarHeight - getHeight();
                     bottom = screenHeight - statusBarHeight;
                 }
-                layout(left, top, right, bottom);
+//                layout(left, top, right, bottom);
+
+                /*offsetLeftAndRight(offsetX);
+                offsetTopAndBottom(offsetY);*/
+
+                /*ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) getLayoutParams();
+                layoutParams.leftMargin = left;
+                layoutParams.topMargin = top;
+                setLayoutParams(layoutParams);*/
+
+                //使用scrollBy
+                ((View) getParent()).scrollBy(-offsetX, -offsetY);
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    public void smoothScrollTo(int destX, int destY) {
+        int scrollX = getScrollX();
+        int scrollY = getScrollY();
+        int delta = destX - scrollX;
+        int deltaY = destY - scrollY;
+        //1000秒内滑向destX
+        mScroller.startScroll(scrollX, scrollY, delta, deltaY, 80000);
+        invalidate();
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        if (mScroller.computeScrollOffset()) {
+            ((View) getParent()).scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            //通过不断的重绘不断的调用computeScroll方法
+            invalidate();
+        }
+
     }
 }

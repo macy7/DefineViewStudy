@@ -21,6 +21,15 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,6 +41,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -44,6 +54,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -70,7 +81,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        CustomMoveView customMoveView = findViewById(R.id.custom);
+//        customMoveView.smoothScrollTo(-400,-500);
+        TextView textView = findViewById(R.id.tvMian);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            animator(textView);
+        }
         final TextInputLayout textInputLayout = findViewById(R.id.tI_edit);
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -336,5 +352,84 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
                     }
                 }).setDuration(1000).show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void animator(final View view){
+        @SuppressLint("ObjectAnimatorBinding") final
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationX", 0,500,0,500);
+        objectAnimator.setDuration(3000);
+        objectAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        ValueAnimator valueAnimator = ValueAnimator.ofArgb(Color.RED,Color.BLACK,Color.YELLOW);
+        valueAnimator.setTarget(view);
+        valueAnimator.setDuration(3000);
+//        valueAnimator.setEvaluator(new ArgbEvaluator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (int) animation.getAnimatedValue();
+                view.setBackgroundColor(value);
+            }
+        });
+//        ObjectAnimator animator = ObjectAnimator.ofInt(view, "BackgroundColor", 0xffff00ff, 0xffffff00, 0xffff00ff);
+//        animator.setDuration(8000);
+//        animator.setEvaluator(new ArgbEvaluator());
+//        animator.start();
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(5000).playTogether(objectAnimator, valueAnimator);
+        animatorSet.start();
+
+//        PropertyValuesHolder propertyValuesHolder = PropertyValuesHolder.ofFloat("rotation", 0,180,0,-180,0);
+//        PropertyValuesHolder propertyValuesHolder1= PropertyValuesHolder.ofFloat("scaleX", 0,1,0,1);
+//        PropertyValuesHolder propertyValuesHolder2 = PropertyValuesHolder.ofFloat("alpha", 0,1,0,1);
+//        ObjectAnimator objectAnimator1 = ObjectAnimator.ofPropertyValuesHolder(view, propertyValuesHolder, propertyValuesHolder1, propertyValuesHolder2);
+//        objectAnimator1.setDuration(5000).start();
+
+        Animator animator = AnimatorInflater.loadAnimator(this, R.animator.scale);
+        animator.setTarget(view);
+        animator.start();
+    }
+
+    public class ArgbEvaluator implements TypeEvaluator {
+        public Object evaluate(float fraction, Object startValue, Object endValue) {
+            int startInt = (Integer) startValue;
+            int startA = (startInt >> 24);
+            int startR = (startInt >> 16) & 0xff;
+            int startG = (startInt >> 8) & 0xff;
+            int startB = startInt & 0xff;
+
+            int endInt = (Integer) endValue;
+            int endA = (endInt >> 24);
+            int endR = (endInt >> 16) & 0xff;
+            int endG = (endInt >> 8) & 0xff;
+            int endB = endInt & 0xff;
+
+            return (int)((startA + (int)(fraction * (endA - startA))) << 24) |
+                    (int)((startR + (int)(fraction * (endR - startR))) << 16) |
+                    (int)((startG + (int)(fraction * (endG - startG))) << 8) |
+                    (int)((startB + (int)(fraction * (endB - startB))));
+        }
     }
 }
