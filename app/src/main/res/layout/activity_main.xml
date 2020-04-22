@@ -194,12 +194,30 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@color/colorAccent"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tvMian"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:text="自定义Behavior" />
+        android:text="自定义Behavior"
+        android:visibility="gone"/>
+    <com.mcy.define.HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/lv1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ListView
+            android:id="@+id/lv2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+        <ListView
+            android:id="@+id/lv3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.mcy.define.HorizontalScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
