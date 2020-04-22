@@ -52,7 +52,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initListView();
         CustomMoveView customMoveView = findViewById(R.id.custom);
 //        customMoveView.smoothScrollTo(-400,-500);
         TextView textView = findViewById(R.id.tvMian);
@@ -431,5 +434,70 @@ public class MainActivity extends AppCompatActivity {
                     (int)((startG + (int)(fraction * (endG - startG))) << 8) |
                     (int)((startB + (int)(fraction * (endB - startB))));
         }
+    }
+
+    public void initListView(){
+        List<Integer> list1 = new ArrayList<>();
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        list1.add(1);
+        List<Integer> list2 = new ArrayList<>();
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        list2.add(2);
+        List<Integer> list3 = new ArrayList<>();
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        list3.add(3);
+        ListView listView1 = findViewById(R.id.lv1);
+        ListView listView2 = findViewById(R.id.lv2);
+        ListView listView3 = findViewById(R.id.lv3);
+        listView1.setAdapter(new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, list1));
+        listView2.setAdapter(new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, list2));
+        listView3.setAdapter(new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, list3));
     }
 }
