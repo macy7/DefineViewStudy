@@ -48,6 +48,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -64,11 +65,25 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.net.ServerSocket;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -78,11 +93,40 @@ public class MainActivity extends AppCompatActivity {
     Bitmap bitmap;
     ViewPager viewPager;
     DrawerLayout drawerLayout;
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
+        beepForAnHour();
+//        testVolatile();
+//        testThread();
+//        Thread thread = new Thread();
+//        Object object = new Object();
+//        ExecutorService executorService = Executors.newSingleThreadExecutor();
+//        Future<String> submit = executorService.submit(new Callable<String>() {
+//            @Override
+//            public String call() throws Exception {
+//                return "xxxxx";
+//            }
+//        });
+//        try {
+//            String s = submit.get();
+//            Toast.makeText(this, "s " + s, Toast.LENGTH_LONG).show();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        object.notify();
+//        try {
+//            thread.join();
+//            thread.interrupt();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         initListView();
         CustomMoveView customMoveView = findViewById(R.id.custom);
 //        customMoveView.smoothScrollTo(-400,-500);
@@ -95,10 +139,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String s = textInputLayout.getEditText().getText().toString();
-                if(s.length() < 6){
+                if (s.length() < 6) {
                     textInputLayout.setErrorEnabled(true);
                     textInputLayout.setError("11111");
-                }else {
+                } else {
                     textInputLayout.setErrorEnabled(false);
                 }
 
@@ -114,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         drawerLayout = findViewById(R.id.drawLayoutFg);
         NavigationView navigationView = findViewById(R.id.design_navigation_view);
-        if(navigationView != null){
+        if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -190,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = new MenuInflater(this);
-        menuInflater.inflate(R.menu.item,menu);
+        menuInflater.inflate(R.menu.item, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -203,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     TabLayout tabLayout;
+
     private void initViePager() {
         tabLayout = findViewById(R.id.tabs);
         final List<String> titles = new ArrayList<>();
@@ -218,12 +263,12 @@ public class MainActivity extends AppCompatActivity {
         titles.add("医疗");
         titles.add("新型");
 
-        for(int i=0; i<titles.size();i++){
+        for (int i = 0; i < titles.size(); i++) {
             tabLayout.addTab(tabLayout.newTab().setText(titles.get(i)));
         }
 
         final List<Fragment> fragments = new ArrayList<>();
-        for(int i=0;i <titles.size();i++){
+        for (int i = 0; i < titles.size(); i++) {
             fragments.add(new ListFragment());
         }
 
@@ -326,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    
+
                                 }
                             })
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -347,8 +392,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void showSnackBar(){
-        Snackbar.make(rvHome,"xxx", Snackbar.LENGTH_LONG)
+    public void showSnackBar() {
+        Snackbar.make(rvHome, "xxx", Snackbar.LENGTH_LONG)
                 .setAction("click", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -358,9 +403,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void animator(final View view){
-        @SuppressLint("ObjectAnimatorBinding") final
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationX", 0,500,0,500);
+    public void animator(final View view) {
+        @SuppressLint("ObjectAnimatorBinding") final ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationX", 0, 500, 0, 500);
         objectAnimator.setDuration(3000);
         objectAnimator.addListener(new Animator.AnimatorListener() {
             @Override
@@ -384,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ValueAnimator valueAnimator = ValueAnimator.ofArgb(Color.RED,Color.BLACK,Color.YELLOW);
+        ValueAnimator valueAnimator = ValueAnimator.ofArgb(Color.RED, Color.BLACK, Color.YELLOW);
         valueAnimator.setTarget(view);
         valueAnimator.setDuration(3000);
 //        valueAnimator.setEvaluator(new ArgbEvaluator());
@@ -429,14 +473,14 @@ public class MainActivity extends AppCompatActivity {
             int endG = (endInt >> 8) & 0xff;
             int endB = endInt & 0xff;
 
-            return (int)((startA + (int)(fraction * (endA - startA))) << 24) |
-                    (int)((startR + (int)(fraction * (endR - startR))) << 16) |
-                    (int)((startG + (int)(fraction * (endG - startG))) << 8) |
-                    (int)((startB + (int)(fraction * (endB - startB))));
+            return (int) ((startA + (int) (fraction * (endA - startA))) << 24) |
+                    (int) ((startR + (int) (fraction * (endR - startR))) << 16) |
+                    (int) ((startG + (int) (fraction * (endG - startG))) << 8) |
+                    (int) ((startB + (int) (fraction * (endB - startB))));
         }
     }
 
-    public void initListView(){
+    public void initListView() {
         List<Integer> list1 = new ArrayList<>();
         list1.add(1);
         list1.add(1);
@@ -500,4 +544,221 @@ public class MainActivity extends AppCompatActivity {
         listView2.setAdapter(new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, list2));
         listView3.setAdapter(new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, list3));
     }
+
+    private void testThread() {
+        MyRunnable myRunnable = new MyRunnable();
+        Thread thread = new Thread(myRunnable);
+        thread.start();
+        try {
+            Thread.sleep(100);
+            synchronized (object) {
+                object.notify();
+            }
+            Thread.sleep(100);
+            myRunnable.setStop(true);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        thread.interrupt();
+        final Alipay alipay = new Alipay(10, 1000);
+        final Random random = new Random();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        int from = random.nextInt(10);
+                        int to = random.nextInt(10);
+                        if (from != to) {
+                            alipay.transfer(from, to, 600);
+                            break;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        List<Thread> list = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            list.add(new Thread(runnable));
+            executorService.submit(runnable);
+        }
+//        for(Thread thread1: list){
+//            thread1.start();
+//        }
+        try {
+            Thread.sleep(2000);
+            int total = 0;
+            for (int i = 0; i < 10; i++) {
+                total += alipay.accounts[i];
+            }
+            Log.d("macy7", "totalNum== " + total);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    final Object object = new Object();
+
+    class MyRunnable implements Runnable {
+        long i;
+        private volatile boolean isStop = false;
+
+        @Override
+        public void run() {
+            long timeStart = System.currentTimeMillis();
+            Log.d("macy7", "start--> " + timeStart);
+            while (!isStop) {
+                i++;
+                if (i == 500) {
+                    try {
+                        synchronized (object) {
+                            object.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            Log.d("macy7", " stop end------> " + (System.currentTimeMillis() - timeStart)
+                    + " i=" + i);
+        }
+
+        private void setStop(boolean isStop) {
+            this.isStop = isStop;
+        }
+    }
+
+    static class Alipay {
+        private double[] accounts;
+        private Lock alipayLock;
+        private Condition condition;
+
+        public Alipay(int n, double money) {
+            accounts = new double[n];
+            alipayLock = new ReentrantLock();
+            condition = alipayLock.newCondition();
+            for (int i = 0; i < n; i++) {
+                accounts[i] = money;
+            }
+        }
+
+        public synchronized void transfer(int from, int to, int amount) throws InterruptedException {
+//            alipayLock.lock();
+            try {
+                while (accounts[from] < amount) {
+                    Log.d("macy7", "await--> from=" + from
+                            + " to=" + to + " " + accounts[from]);
+//                    condition.await();
+                    wait();
+                }
+                accounts[from] = accounts[from] - amount;
+                accounts[to] = accounts[to] + amount;
+                Log.d("macy7", "signalAll--> from=" + from
+                        + " to=" + to + " " + accounts[from] + " " + accounts[to]);
+//                condition.signalAll();
+                notifyAll();
+            } finally {
+//                alipayLock.unlock();
+            }
+
+
+        }
+    }
+
+    static class Test {
+        private volatile int inc = 0;
+
+        void increase() {
+            inc++;
+        }
+    }
+
+    private void testVolatile() {
+        final Test test = new Test();
+        for (int i = 0; i < 2; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int j = 0; j < 1000; j++) {
+                        test.increase();
+                    }
+                }
+            }).start();
+        }
+
+//        while (Thread.activeCount() > 2){
+//            Thread.yield();
+//        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.d("macy7", " final value == " + test.inc);
+    }
+
+    private final ScheduledExecutorService scheduler =
+            Executors.newScheduledThreadPool(1);
+
+    public void beepForAnHour() {
+        final Runnable beeper1 = new Runnable() {
+
+            public void run() {
+
+                try {
+                    Thread.sleep(5*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+//                测试scheduleAtFixedRate方法时，放开此注释，有异常，请扑获
+
+                System.out.println("beep1");
+            }
+
+        };
+
+        final Runnable beeper2 = new Runnable() {
+
+            public void run() {
+
+                try {
+                    Thread.sleep(5*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+// 测试scheduleWithFixedDelay方法时，放开此注释，有异常，请扑获
+
+                System.out.println("beep2");
+            }
+
+        };
+
+
+        final ScheduledFuture<?> beeperHandle1 =
+
+                scheduler.scheduleAtFixedRate(beeper1, 5, 5, SECONDS);
+
+        final ScheduledFuture<?> beeperHandle2 =
+                scheduler.scheduleAtFixedRate(beeper2, 5, 5, SECONDS);
+
+
+        scheduler.schedule(new Runnable() {
+
+            public void run() {
+                beeperHandle1.cancel(true);
+            }
+        }, 20, SECONDS);
+
+        scheduler.schedule(new Runnable() {
+
+            public void run() {
+                beeperHandle2.cancel(true);
+            }
+        }, 20, SECONDS);
+    }
+
 }

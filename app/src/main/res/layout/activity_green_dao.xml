@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_insert_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="插入一个"
+        />
+
+    <Button
+        android:id="@+id/btn_insert_many"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="插入多个"
+        />
+    <Button
+        android:id="@+id/btn_alter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="修改"
+        />
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删除"
+        />
+
+    <Button
+        android:id="@+id/btn_delete_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删除所有"
+        />
+
+    <Button
+        android:id="@+id/btn_check_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查找一个"
+        />
+
+    <Button
+        android:id="@+id/btn_check_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查找全部"
+        />
+
+    <Button
+        android:id="@+id/btn_query_native_sql"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="使用native sql进行条件查询"
+        />
+
+    <Button
+        android:id="@+id/btn_query_builder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="使用queryBuilder进行条件查询"
+        />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tvShow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </ScrollView>
+</LinearLayout>

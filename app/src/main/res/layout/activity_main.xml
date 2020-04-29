@@ -205,7 +205,8 @@
         android:visibility="gone"/>
     <com.mcy.define.HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
         <ListView
             android:id="@+id/lv1"
             android:layout_width="match_parent"
@@ -220,4 +221,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.mcy.define.HorizontalScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
