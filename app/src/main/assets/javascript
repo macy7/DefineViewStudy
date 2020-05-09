@@ -1,0 +1,57 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>Carson_Ho</title>-->
+
+<!--    <script>-->
+<!--   function callJS(){-->
+<!--      alert("Android调用了JS的callJS方法");-->
+<!--   }-->
+
+
+<!--    </script>-->
+
+<!--</head>-->
+
+<!--</html>-->
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>Carson</title>-->
+
+<!--</head>-->
+<!--<body>-->
+<!--<script type="text/javascript">-->
+
+
+<!--         function callAndroid(){-->
+<!--        // 由于对象映射，所以调用test对象等于调用Android映射的对象-->
+<!--            test.hello("js调用了android中的hello方法");-->
+<!--         }-->
+
+
+
+<!--</script>-->
+<!--//点击按钮则调用callAndroid函数-->
+<!--<button οnclick="callAndroid()">见证奇迹</button>-->
+<!--</body>-->
+<!--</html>-->
+<!--STATUS OK-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <title>在div中写入一个e69da5e887aae799bee5baa6e79fa5e9819331333238666334Button按钮 (js)_百度知道 </title>
+    <link rel="alternate" type="application/rss+xml" title="“在div中写入一个Button按钮 (js)”的最新回答（RSS 2.0）" href="http://zhidao.baidu.com/q?ct=20&qid=113109049&pn=65535&rn=25&tn=rssqb">
+</head>
+<body>
+<script>
+bt=document.createElement("button");
+bt.innerHTML="添加一个button";
+document.body.appendChild(bt);
+</script>
+</body>
+</html>
