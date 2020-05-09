@@ -33,6 +33,13 @@ public class DateBaseActivity extends AppCompatActivity implements View.OnClickL
         btnQuery.setOnClickListener(this);
         textView = findViewById(R.id.tvHome);
         dataBaseUtil = DataBaseUtil.getInstance(this);
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        };
     }
 
     @Override

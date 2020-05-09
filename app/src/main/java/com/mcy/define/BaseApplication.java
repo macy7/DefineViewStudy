@@ -17,12 +17,14 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class BaseApplication extends Application {
     private static BaseApplication mInstance;
+    private static AppComponent appComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
         initGreenDao();
+        appComponent = DaggerAppComponent.builder().appModule(new AppModule()).build();
     }
 
     public static BaseApplication getInstance() {
@@ -33,5 +35,9 @@ public class BaseApplication extends Application {
     {
         DaoManager mManager = DaoManager.getInstance();
         mManager.init(this);
+    }
+
+    public static AppComponent getAppComponent() {
+        return appComponent;
     }
 }
