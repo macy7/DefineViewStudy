@@ -23,17 +23,30 @@
         <activity android:name=".Dagger2Activity" />
         <activity android:name=".RxJavaActivity" />
         <activity android:name=".GreenDaoActivity">
+
+        </activity>
+        <activity android:name=".DateBaseActivity" />
+        <activity android:name=".SocketActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".badgeviewdemo.MainActivity">
+
+        </activity>
+
+        <activity android:name=".badgeviewdemo.ListViewActivity" >
+
+        </activity>
+        <activity android:name=".badgeviewdemo.RecyclerViewActivity" >
+
+        </activity>
+
+        <service android:name=".PicService" />
+        <activity android:name="com.zhy.tree_view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DateBaseActivity" />
-        <activity android:name=".SocketActivity" />
-        <activity android:name=".MainActivity" />
-
-        <service android:name=".PicService" />
     </application>
 
 </manifest>
